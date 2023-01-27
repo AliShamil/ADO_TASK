@@ -6,16 +6,17 @@
         
         xmlns:local="clr-namespace:ADO_TASK.Views" xmlns:materialDesign="http://materialdesigninxaml.net/winfx/xaml/themes"
         mc:Ignorable="d"
-        Title="AddRatingView" Height="100" Width="200">
+        Title="Rating" MinHeight="154" MinWidth="222" Height="154" Width="222" WindowStartupLocation="CenterScreen" WindowStyle="None">
     <Grid>
         <Grid.RowDefinitions>
             <RowDefinition/>
             <RowDefinition/>
             <RowDefinition/>
         </Grid.RowDefinitions>
-        <TextBlock Text="Rating" VerticalAlignment="Center" HorizontalAlignment="Center" FontSize="20"/>
+        <TextBlock Text="Rating" VerticalAlignment="Center" HorizontalAlignment="Center" FontSize="20" Style="{StaticResource CustomTxtBlockStyle}"/>
         <materialDesign:RatingBar VerticalAlignment="Center" HorizontalAlignment="Center"
   x:Name="BasicRatingBar"
+                                  
   Value="0"
                                 
                                   Grid.Row="1"/>
@@ -24,10 +25,10 @@
                 <ColumnDefinition/>
                 <ColumnDefinition/>
             </Grid.ColumnDefinitions>
-            <Button Content="Accept" Click="Button_Accept_Click"/>
-            <Button Grid.Column="1" Content="Cancel" Click="Button_Cancel_Click"/>
+            <Button Content="Accept" Click="Button_Accept_Click" Style="{StaticResource CustomBtnStyle}"/>
+            <Button Grid.Column="1" Content="Cancel" Click="Button_Cancel_Click" Style="{StaticResource CustomBtnStyle}"/>
         </Grid>
     </Grid>
 
-    
+
 </Window>

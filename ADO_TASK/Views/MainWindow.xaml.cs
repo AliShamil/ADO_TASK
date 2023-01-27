@@ -23,15 +23,24 @@ namespace ADO_TASK
 
     public partial class MainWindow : Window
     {
-
+        SqlTransaction tran = null;
         SqlConnection? connection = null;
         SqlDataAdapter? adapter = null;
         DataViewManager? dataView = null;
         DataSet? dataSet = null;
+
         public MainWindow()
         {
             InitializeComponent();
             Configuration();
+
+            #region TableMapping
+
+            adapter?.TableMappings.Add("Table", "Products");
+            adapter?.TableMappings.Add("Table1", "Categories");
+            adapter?.TableMappings.Add("Table2", "Ratings");
+
+            #endregion
         }
         private void Configuration()
         {
@@ -44,10 +53,6 @@ namespace ADO_TASK
             adapter = new SqlDataAdapter("SELECT * FROM Products; SELECT * FROM Categories; SELECT * FROM Ratings", connection);
             dataSet = new DataSet();
             dataView = new DataViewManager(dataSet);
-
-            adapter.TableMappings.Add("Table", "Products");
-            adapter.TableMappings.Add("Table1", "Categories");
-            adapter.TableMappings.Add("Table2", "Ratings");
         }
 
         private void Window_Loaded(object sender, RoutedEventArgs e)
@@ -67,10 +72,10 @@ namespace ADO_TASK
         private void Categories_Cbox_SelectionChanged(object sender, SelectionChangedEventArgs e)
         {
 
-            if (Categories_Cbox.SelectedItem is DataRowView rowView)
+            if (Categories_Cbox.SelectedItem is DataRowView selectedView)
             {
 
-                var id = rowView.Row["Id"];
+                var id = selectedView.Row["Id"];
 
                 var table = dataSet?.Tables["Products"];
 
@@ -96,7 +101,7 @@ namespace ADO_TASK
                 return;
             }
 
-            var view = dataView?.CreateDataView(dataSet?.Tables["Products"]);
+            var view = dataView?.CreateDataView(dataSet?.Tables["Products"]!)!;
 
             view.RowFilter =  $"Name LIKE '%{Txt_Search.Text}%'";
 
@@ -110,13 +115,13 @@ namespace ADO_TASK
             try
             {
                 connection?.Open();
+                tran = connection?.BeginTransaction();
 
                 var command = connection?.CreateCommand();
 
                 if (command is null)
                     return;
 
-                var tran = connection?.BeginTransaction();
 
                 command.Transaction = tran;
 
@@ -124,7 +129,7 @@ namespace ADO_TASK
                 command.CommandType = CommandType.StoredProcedure;
 
                 command.Parameters.Add("productid", SqlDbType.Int);
-                command.Parameters["productid"].Value = (int)(ProductListView.SelectedItem as DataRowView)?.Row["Id"];
+                command.Parameters["productid"].Value = (int)(ProductListView.SelectedItem as DataRowView)?.Row["Id"]!;
 
 
 
@@ -135,13 +140,14 @@ namespace ADO_TASK
             catch (Exception ex)
             {
                 MessageBox.Show(ex.Message);
+                tran?.Rollback();
             }
             finally
             {
                 connection?.Close();
             }
 
-            dataSet.Clear();
+            dataSet?.Clear();
             Window_Loaded(sender, e);
         }
 
@@ -154,28 +160,24 @@ namespace ADO_TASK
                 var result = updateProductView.ShowDialog();
                 if (result is true)
                 {
-                    dataSet.Clear();
+                    dataSet?.Clear();
                     Window_Loaded(sender, e);
                 }
             }
-        }
-
-        private void ProductListView_MouseRightButtonDown(object sender, MouseButtonEventArgs e)
-        {
-
         }
 
         private void Btn_AddRating_Click(object sender, RoutedEventArgs e)
         {
             if (ProductListView.SelectedItem is not null && connection is not null)
             {
+                var selectedItemId = (int)(ProductListView.SelectedItem as DataRowView)?.Row["Id"]!;
 
-                AddRatingView addView = new(connection, (int)(ProductListView.SelectedItem as DataRowView)?.Row["Id"]);
+                AddRatingView addView = new(connection, selectedItemId);
 
                 var result = addView.ShowDialog();
-                if (result is false)
+                if (result is true)
                 {
-                    dataSet.Clear();
+                    dataSet?.Clear();
                     Window_Loaded(sender, e);
                 }
             }
@@ -183,7 +185,6 @@ namespace ADO_TASK
 
         private void Btn_AddProduct_Click(object sender, RoutedEventArgs e)
         {
-
             if (connection is not null)
             {
                 AddProductView addProductView = new(connection, dataSet?.Tables["Categories"]);
@@ -191,7 +192,7 @@ namespace ADO_TASK
                 var result = addProductView.ShowDialog();
                 if (result is true)
                 {
-                    dataSet.Clear();
+                    dataSet?.Clear();
                     Window_Loaded(sender, e);
                 }
             }

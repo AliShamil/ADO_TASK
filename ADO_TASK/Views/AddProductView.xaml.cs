@@ -19,77 +19,82 @@ namespace ADO_TASK.Views
 
     public partial class AddProductView : Window
     {
-        SqlConnection? connection = null;
-        DataTable? categories = null;
-
+        SqlConnection? _connection = null;
+        DataTable? _categories = null;
+        SqlTransaction tran = null;
         public string? ProductName { get; set; }
         public int Quantity { get; set; }
         public decimal Price { get; set; }
         private int categoryId { get; set; }
 
-        public AddProductView(SqlConnection? sqlConnection, DataTable? categories)
+        public AddProductView(SqlConnection? connection, DataTable? categories)
         {
             InitializeComponent();
             DataContext = this;
-            connection = sqlConnection;
-            this.categories = categories;
             categoryId = -1;
+            _connection = connection;
+            _categories = categories;
         }
 
         private void Window_Loaded(object sender, RoutedEventArgs e)
         {
-            CBoxCategories.DataContext = categories;
-            CBoxCategories.DisplayMemberPath = categories?.Columns["Name"]?.ColumnName;
+            CBoxCategories.DataContext = _categories;
+            CBoxCategories.DisplayMemberPath = _categories?.Columns["Name"]?.ColumnName;
         }
 
-        private void CBoxCategories_SelectionChanged(object sender, SelectionChangedEventArgs e)
+        private void Categories_Cbox_SelectionChanged(object sender, SelectionChangedEventArgs e)
         {
             if (CBoxCategories.SelectedItem is DataRowView rowView)
             {
-                var row = rowView.Row;
-                categoryId = Convert.ToInt32(row["Id"]);
+                categoryId = Convert.ToInt32(rowView.Row["Id"]);
             }
         }
 
 
-        private void ButtonCancel_Click(object sender, RoutedEventArgs e) => DialogResult = false;
+        private void Btn_Cancel_Click(object sender, RoutedEventArgs e) => DialogResult = false;
 
-        private void ButtonAdd_Click(object sender, RoutedEventArgs e)
+        private void Btn_Add_Click(object sender, RoutedEventArgs e)
         {
-            StringBuilder builder = new StringBuilder();
-
-            if (string.IsNullOrWhiteSpace(ProductName))
-                builder.Append($"{nameof(ProductName)} Cannot Be Empty\n");
-
-            if (Price <= 0)
-                builder.Append($"{nameof(Price)} Cannot be below or equal to 0\n");
-
-            if (Quantity< 0)
-                builder.Append($"{nameof(Quantity)} Cannot be below 0\n");
-
-            if (categoryId==-1)
-                builder.Append($"{nameof(categoryId)} Must be choosen\n");
-
-            if (builder.Length>0)
-            {
-                MessageBox.Show(builder.ToString());
+            if(Validation() is false)
                 return;
-            }
-
+           
             AddProduct();
 
             DialogResult= true;
         }
 
+        private bool Validation()
+        {
+            StringBuilder builder = new();
+
+            if (string.IsNullOrWhiteSpace(ProductName))
+                builder.Append($"{nameof(ProductName)} Can't be empty or null!\n");
+
+            if (Price <= 0)
+                builder.Append($"{nameof(Price)} Can't be less or equal to zero!\n");
+
+            if (categoryId==-1)
+                builder.Append($"{nameof(categoryId)} Can't be empty!\n");
+
+            if (Quantity< 0)
+                builder.Append($"{nameof(Quantity)} Can't be less than zero!\n");
+
+            if (builder.Length>0)
+            {
+                MessageBox.Show(builder.ToString());
+                return false;
+            }
+            return true;
+        }
 
         private void AddProduct()
         {
-                var tran = connection?.BeginTransaction();
             try
             {
-                connection?.Open();
+                _connection?.Open();
+                tran = _connection?.BeginTransaction();
 
-                var command = connection?.CreateCommand();
+                var command = _connection?.CreateCommand();
 
                 if (command is null)
                     return;
@@ -120,11 +125,11 @@ namespace ADO_TASK.Views
             catch (Exception ex)
             {
                 MessageBox.Show(ex.Message);
-              tran?.Rollback();
+                tran?.Rollback();
             }
             finally
             {
-                connection?.Close();
+                _connection?.Close();
             }
         }
     }

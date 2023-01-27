@@ -20,6 +20,7 @@ namespace ADO_TASK
     public partial class AddRatingView : Window
     {
         SqlConnection _connection;
+        SqlTransaction tran = null;
         private int _productId;
         public AddRatingView(SqlConnection connection, int productId)
         {
@@ -32,16 +33,17 @@ namespace ADO_TASK
 
         private void Button_Accept_Click(object sender, RoutedEventArgs e)
         {
+            
             try
             {
                 _connection?.Open();
+                 tran = _connection?.BeginTransaction();
 
                 var command = _connection?.CreateCommand();
 
                 if (command is null)
                     return;
 
-                var tran = _connection?.BeginTransaction();
 
                 command.Transaction = tran;
 
@@ -61,17 +63,16 @@ namespace ADO_TASK
             catch (Exception ex)
             {
                 MessageBox.Show(ex.Message);
+                tran?.Rollback();
             }
             finally
             {
                 _connection?.Close();
             }
-            DialogResult = false;
+            DialogResult = true;
         }
 
-        private void Button_Cancel_Click(object sender, RoutedEventArgs e)
-        {
-            DialogResult = false;
-        }
+        private void Button_Cancel_Click(object sender, RoutedEventArgs e) => DialogResult = false;
+
     }
 }

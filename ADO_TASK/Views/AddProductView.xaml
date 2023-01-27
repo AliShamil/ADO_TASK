@@ -6,7 +6,7 @@
          xmlns:materialDesign="http://materialdesigninxaml.net/winfx/xaml/themes"
         xmlns:local="clr-namespace:ADO_TASK.Views"
         mc:Ignorable="d"
-        Title="AddProductView" Height="450" Width="800" Loaded="Window_Loaded">
+        Title="Add" MinHeight="488" MinWidth="497" Height="488" Width="497" Loaded="Window_Loaded" WindowStartupLocation="CenterScreen" WindowStyle="None">
     <Grid>
         <Grid >
             <Grid.RowDefinitions>
@@ -21,27 +21,27 @@
                 <RowDefinition/>
             </Grid.RowDefinitions>
 
-            <TextBlock  Text="Product Name" HorizontalAlignment="Center" VerticalAlignment="Center"/>
-            <TextBox Grid.Row="1"  Text="{Binding ProductName,UpdateSourceTrigger=PropertyChanged}"/>
+            <TextBlock  Text="Product Name" HorizontalAlignment="Left" VerticalAlignment="Center" Style="{StaticResource CustomTxtBlockStyle}"/>
+            <TextBox Grid.Row="1"  Text="{Binding ProductName,UpdateSourceTrigger=PropertyChanged}" Style="{StaticResource CustomTxtBoxStyle}" />
 
-            <TextBlock Grid.Row="2"  Text="Category" HorizontalAlignment="Center" VerticalAlignment="Center"/>
+            <TextBlock Grid.Row="2"  Text="Category" HorizontalAlignment="Left" VerticalAlignment="Center" Style="{StaticResource CustomTxtBlockStyle}"/>
             <ComboBox Grid.Row="3" 
                   Name="CBoxCategories"
                   materialDesign:HintAssist.Hint="Category" 
                   Style="{StaticResource MaterialDesignComboBox}" 
-                
+                  Margin="5"
                   ItemsSource="{Binding}"
-                  FontSize="26"
+                  FontSize="20"
+                  FontFamily="Comic Sans MS"
+                  SelectionChanged="Categories_Cbox_SelectionChanged"/>
 
-                  SelectionChanged="CBoxCategories_SelectionChanged"/>
 
 
+            <TextBlock Grid.Row="4" Text="Quantity" HorizontalAlignment="Left" VerticalAlignment="Center" Style="{StaticResource CustomTxtBlockStyle}"/>
+            <TextBox Grid.Row="5"  Text="{Binding Quantity,UpdateSourceTrigger=PropertyChanged}" Style="{StaticResource CustomTxtBoxStyle}"/>
 
-            <TextBlock Grid.Row="4" Text="Quantity" HorizontalAlignment="Center" VerticalAlignment="Center"/>
-            <TextBox Grid.Row="5"  Text="{Binding Quantity,UpdateSourceTrigger=PropertyChanged}"/>
-
-            <TextBlock Grid.Row="6"  Text="Price" HorizontalAlignment="Center" VerticalAlignment="Center"/>
-            <TextBox Grid.Row="7" Text="{Binding Price,UpdateSourceTrigger=PropertyChanged}"/>
+            <TextBlock Grid.Row="6"  Text="Price" HorizontalAlignment="Left" VerticalAlignment="Center" Style="{StaticResource CustomTxtBlockStyle}"/>
+            <TextBox Grid.Row="7" Text="{Binding Price,UpdateSourceTrigger=PropertyChanged}" Style="{StaticResource CustomTxtBoxStyle}"/>
 
             <Grid Grid.Row="8">
                 <Grid.ColumnDefinitions>
@@ -51,17 +51,17 @@
 
 
                 <Button
-                Style="{StaticResource MaterialDesignRaisedDarkButton}"
-                Width="100"
+                Style="{StaticResource CustomBtnStyle}"
+                
                 Content="Add" 
-                Click="ButtonAdd_Click"/>
+                Click="Btn_Add_Click"/>
 
                 <Button
                 Grid.Column="1"
-                Style="{StaticResource MaterialDesignRaisedDarkButton}"
-                Width="100"
+                Style="{StaticResource CustomBtnStyle}"
+
                 Content="Cancel"
-                Click="ButtonCancel_Click"/>
+                Click="Btn_Cancel_Click"/>
             </Grid>
         </Grid>
     </Grid>

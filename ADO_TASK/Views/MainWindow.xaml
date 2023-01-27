@@ -6,7 +6,7 @@
         xmlns:materialDesign="http://materialdesigninxaml.net/winfx/xaml/themes" 
         xmlns:local="clr-namespace:ADO_TASK.Views"
         mc:Ignorable="d"
-        Title="MainWindow" Height="450" Width="800" Loaded="Window_Loaded">
+        Title="Shop" Height="450" Width="800" Loaded="Window_Loaded">
     <Grid>
         <Grid.RowDefinitions>
             <RowDefinition Height="70"/>
@@ -26,6 +26,7 @@
                 FontSize="15"
                 Margin="10"
                 ItemsSource="{Binding}"
+                FontFamily="Comic Sans MS"
                 SelectionChanged="Categories_Cbox_SelectionChanged"
             
             materialDesign:HintAssist.Hint="Categories"  >
@@ -34,8 +35,9 @@
 
 
             <TextBox
-                                FontSize="20"
-                 Margin="10"
+            FontFamily="Comic Sans MS"
+            FontSize="16"
+            Margin="10"
             Name="Txt_Search"
             Grid.Column="1"
             materialDesign:HintAssist.Hint="Search"
@@ -45,26 +47,8 @@
             
             </TextBox>
 
-            <!--<materialDesign:PopupBox
-                Grid.Column="2"  
-  >
-                <materialDesign:PopupBox.ToggleCheckedContent>
-                    <materialDesign:PackIcon
-      Kind="Pencil"
-      
-       />
-                </materialDesign:PopupBox.ToggleCheckedContent>
-                <StackPanel>
-                    <Button
-      ToolTip="Product"
-      Content="Product" />
-                    <Button
-      ToolTip="Rating"
-      Content="Rating" 
-                        Click="Button_Click"/>
-                </StackPanel>
-            </materialDesign:PopupBox>-->
-            <materialDesign:PopupBox
+
+            <materialDesign:PopupBox Width="40" Height="40"  
                 Grid.Column="2"
   Style="{StaticResource MaterialDesignMultiFloatingActionPopupBox}"
   PlacementMode="BottomAndAlignCentres"
@@ -94,8 +78,8 @@
         </Grid>
 
 
-        <ListView SelectionMode="Single" Name="ProductListView" Grid.Row="1" FontSize="10" ScrollViewer.VerticalScrollBarVisibility="Auto"
-          ScrollViewer.CanContentScroll="False" MouseDoubleClick="ProductListView_MouseRightButtonDown">
+        <ListView SelectionMode="Single" Name="ProductListView" Grid.Row="1" FontSize="10" ScrollViewer.VerticalScrollBarVisibility="Auto" FontFamily="Comic Sans MS" 
+          ScrollViewer.CanContentScroll="False">
             <ListView.ContextMenu>
                 <ContextMenu>
                     <MenuItem Header="Edit"
