@@ -1,4 +1,5 @@
-﻿using Microsoft.Extensions.Configuration;
+﻿using ADO_TASK.Views;
+using Microsoft.Extensions.Configuration;
 using System;
 using System.Collections.Generic;
 using System.Data;
@@ -48,7 +49,8 @@ namespace ADO_TASK
             adapter.TableMappings.Add("Table1", "Categories");
             adapter.TableMappings.Add("Table2", "Ratings");
         }
-        private  void Window_Loaded(object sender, RoutedEventArgs e)
+
+        private void Window_Loaded(object sender, RoutedEventArgs e)
         {
             if (connection is not null && dataSet is not null)
             {
@@ -62,7 +64,7 @@ namespace ADO_TASK
 
 
 
-        private  void Categories_Cbox_SelectionChanged(object sender, SelectionChangedEventArgs e)
+        private void Categories_Cbox_SelectionChanged(object sender, SelectionChangedEventArgs e)
         {
 
             if (Categories_Cbox.SelectedItem is DataRowView rowView)
@@ -105,32 +107,93 @@ namespace ADO_TASK
 
         private void Btn_Remove_Click(object sender, RoutedEventArgs e)
         {
+            try
+            {
+                connection?.Open();
 
+                var command = connection?.CreateCommand();
+
+                if (command is null)
+                    return;
+
+                var tran = connection?.BeginTransaction();
+
+                command.Transaction = tran;
+
+                command.CommandText = "sp_RemoveProduct";
+                command.CommandType = CommandType.StoredProcedure;
+
+                command.Parameters.Add("productid", SqlDbType.Int);
+                command.Parameters["productid"].Value = (int)(ProductListView.SelectedItem as DataRowView)?.Row["Id"];
+
+
+
+                command.ExecuteNonQuery();
+
+                tran?.Commit();
+            }
+            catch (Exception ex)
+            {
+                MessageBox.Show(ex.Message);
+            }
+            finally
+            {
+                connection?.Close();
+            }
+
+            dataSet.Clear();
+            Window_Loaded(sender, e);
         }
 
         private void Btn_Edit_Click(object sender, RoutedEventArgs e)
         {
-
+            if (connection is not null)
+            {
+                UpdateProductView updateProductView = new(connection, dataSet?.Tables["Categories"], ProductListView.SelectedItem as DataRowView);
+                
+                var result = updateProductView.ShowDialog();
+                if (result is true)
+                {
+                    dataSet.Clear();
+                    Window_Loaded(sender, e);
+                }
+            }
         }
 
         private void ProductListView_MouseRightButtonDown(object sender, MouseButtonEventArgs e)
         {
-            
+
         }
 
         private void Btn_AddRating_Click(object sender, RoutedEventArgs e)
         {
             if (ProductListView.SelectedItem is not null && connection is not null)
-            { 
-
-            AddRatingView addView = new(connection, (int)(ProductListView.SelectedItem as DataRowView)?.Row["Id"]);
-
-            var result = addView.ShowDialog();
-            if (result is false)
             {
-                dataSet.Clear();
-                Window_Loaded(sender,e);
+
+                AddRatingView addView = new(connection, (int)(ProductListView.SelectedItem as DataRowView)?.Row["Id"]);
+
+                var result = addView.ShowDialog();
+                if (result is false)
+                {
+                    dataSet.Clear();
+                    Window_Loaded(sender, e);
+                }
             }
+        }
+
+        private void Btn_AddProduct_Click(object sender, RoutedEventArgs e)
+        {
+
+            if (connection is not null)
+            {
+                AddProductView addProductView = new(connection, dataSet?.Tables["Categories"]);
+
+                var result = addProductView.ShowDialog();
+                if (result is true)
+                {
+                    dataSet.Clear();
+                    Window_Loaded(sender, e);
+                }
             }
         }
     }

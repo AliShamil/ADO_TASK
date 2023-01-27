@@ -4,7 +4,7 @@
         xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
         xmlns:materialDesign="http://materialdesigninxaml.net/winfx/xaml/themes" 
-        xmlns:local="clr-namespace:ADO_TASK"
+        xmlns:local="clr-namespace:ADO_TASK.Views"
         mc:Ignorable="d"
         Title="MainWindow" Height="450" Width="800" Loaded="Window_Loaded">
     <Grid>
@@ -75,6 +75,7 @@
                     <Button
                         
       ToolTip="Add Product"
+                        Click="Btn_AddProduct_Click"
       >
                         <materialDesign:PackIcon 
       Kind="TableAdd"/>
@@ -110,7 +111,9 @@
                               >
                         <MenuItem.Icon>
                             <materialDesign:PackIcon 
-      Kind="FileDocumentRemove"/>
+      Kind="FileDocumentRemove"
+                                />
+                            
                         </MenuItem.Icon>
                     </MenuItem>
                 </ContextMenu>
@@ -129,9 +132,7 @@
                     <GridViewColumn DisplayMemberBinding="{Binding Path=Quantity}"
                      Header="Quantity"
                     />
-                    <GridViewColumn DisplayMemberBinding="{Binding Path=CategoryID}"
-                     Header="CategoryID"
-                     />
+
                     <GridViewColumn DisplayMemberBinding="{Binding Path=Rating}"
                      Header="Rating"
                      />

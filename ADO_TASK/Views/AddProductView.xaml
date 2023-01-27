@@ -1,0 +1,68 @@
+﻿<Window x:Class="ADO_TASK.Views.AddProductView"
+        xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+        xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+         xmlns:materialDesign="http://materialdesigninxaml.net/winfx/xaml/themes"
+        xmlns:local="clr-namespace:ADO_TASK.Views"
+        mc:Ignorable="d"
+        Title="AddProductView" Height="450" Width="800" Loaded="Window_Loaded">
+    <Grid>
+        <Grid >
+            <Grid.RowDefinitions>
+                <RowDefinition/>
+                <RowDefinition/>
+                <RowDefinition/>
+                <RowDefinition/>
+                <RowDefinition/>
+                <RowDefinition/>
+                <RowDefinition/>
+                <RowDefinition/>
+                <RowDefinition/>
+            </Grid.RowDefinitions>
+
+            <TextBlock  Text="Product Name" HorizontalAlignment="Center" VerticalAlignment="Center"/>
+            <TextBox Grid.Row="1"  Text="{Binding ProductName,UpdateSourceTrigger=PropertyChanged}"/>
+
+            <TextBlock Grid.Row="2"  Text="Category" HorizontalAlignment="Center" VerticalAlignment="Center"/>
+            <ComboBox Grid.Row="3" 
+                  Name="CBoxCategories"
+                  materialDesign:HintAssist.Hint="Category" 
+                  Style="{StaticResource MaterialDesignComboBox}" 
+                
+                  ItemsSource="{Binding}"
+                  FontSize="26"
+
+                  SelectionChanged="CBoxCategories_SelectionChanged"/>
+
+
+
+            <TextBlock Grid.Row="4" Text="Quantity" HorizontalAlignment="Center" VerticalAlignment="Center"/>
+            <TextBox Grid.Row="5"  Text="{Binding Quantity,UpdateSourceTrigger=PropertyChanged}"/>
+
+            <TextBlock Grid.Row="6"  Text="Price" HorizontalAlignment="Center" VerticalAlignment="Center"/>
+            <TextBox Grid.Row="7" Text="{Binding Price,UpdateSourceTrigger=PropertyChanged}"/>
+
+            <Grid Grid.Row="8">
+                <Grid.ColumnDefinitions>
+                    <ColumnDefinition/>
+                    <ColumnDefinition/>
+                </Grid.ColumnDefinitions>
+
+
+                <Button
+                Style="{StaticResource MaterialDesignRaisedDarkButton}"
+                Width="100"
+                Content="Add" 
+                Click="ButtonAdd_Click"/>
+
+                <Button
+                Grid.Column="1"
+                Style="{StaticResource MaterialDesignRaisedDarkButton}"
+                Width="100"
+                Content="Cancel"
+                Click="ButtonCancel_Click"/>
+            </Grid>
+        </Grid>
+    </Grid>
+</Window>
